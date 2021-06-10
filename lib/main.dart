@@ -1,7 +1,10 @@
+import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:trip_tracker/map_screen.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:trip_tracker/route_preview_screen.dart';
+import 'package:trip_tracker/shared_preference.dart';
+import 'package:trip_tracker/trip.dart';
 
 void main() {
   runApp(MyApp());
@@ -37,12 +40,12 @@ class _MyHomePageState extends State<MyHomePage> {
   List<LatLng> polylineCoordinates = [];
   String googleAPiKey = "AIzaSyCmdIrgckY68EcKrytDL8u74U-YXIPl0CQ";
   String elapsedTime = '';
-
-  late List<String> entries = [];
+  late List <Trip> trips = [];
+  SharedPreference sharedPref = SharedPreference();
 
   @override
   void initState() {
-    setDataFromSharedPref();
+    getPreviousTrips();
     super.initState();
   }
 
@@ -54,12 +57,15 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: ListView.separated(
         padding: const EdgeInsets.all(8),
-        itemCount: entries.length,
+        itemCount: trips.length,
         itemBuilder: (BuildContext context, int index) {
-          return Container(
-            height: 50,
-            color: Colors.amber[200],
-            child: Center(child: Text('Trip ${entries[index]}')),
+          return GestureDetector(
+            onTap: ()=>{ Navigator.push(context, MaterialPageRoute(builder: (context) => RouteViewScreen(trip: trips[index]),),)},
+            child: Container(
+              height: 50,
+              color: Colors.amber[200],
+              child: Center(child: Text('Trip ${trips[index].time}')),
+            ),
           );
         },
         separatorBuilder: (BuildContext context, int index) => const Divider(),
@@ -72,25 +78,26 @@ class _MyHomePageState extends State<MyHomePage> {
               elapsedTime = result[0];
               polylineCoordinates = result[1];
             });
-            entries.add(elapsedTime);
-            storeTimeAndRoute(entries, polylineCoordinates);
+            storeTimeAndRoute(elapsedTime, polylineCoordinates);
           }
-
         },
         child: Icon(Icons.add),
       ),
     );
   }
 
-  setDataFromSharedPref() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      entries = prefs.getStringList('entries')!;
-    });
+  getPreviousTrips() async {
+    // List<Trip> tripData = Trip.fromJson(await sharedPref.readTrips('trips')) as List<Trip>;
+    // setState(() {
+    //   trips = tripData;
+    // });
   }
 
-  storeTimeAndRoute(List<String> entries, List<LatLng> polylineCoordinates) async{
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setStringList('entries', entries);
+  storeTimeAndRoute(String time, List<LatLng> route) async{
+    setState(() {
+      trips.add(Trip(t: time, r: route));
+      sharedPref.saveTrips('trips', trips);
+    });
+
   }
 }

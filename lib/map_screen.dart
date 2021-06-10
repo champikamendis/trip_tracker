@@ -98,7 +98,7 @@ class _MapScreenState extends State<MapScreen> {
                 polylineCoordinates.add(_destLocation);
               });
             print(position == null ? 'Unknown' : position.latitude.toString() + ', ' + position.longitude.toString());
-            final cameraPosition = CameraPosition(target: LatLng(position.latitude, position.longitude), zoom: 14.4746);
+            final cameraPosition = CameraPosition(target: LatLng(position.latitude, position.longitude), zoom: 20);
             controller.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
         });
     return position;
@@ -199,7 +199,6 @@ class _MapScreenState extends State<MapScreen> {
     /// origin marker
     _addMarker(_originLocation, "origin",
         BitmapDescriptor.defaultMarker);
-
     _getPolyline();
   }
 }
