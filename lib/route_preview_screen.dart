@@ -4,8 +4,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 
 class RouteViewScreen extends StatefulWidget {
-  final  trip;
-  RouteViewScreen({Key? key, required this.trip}) : super(key: key);
+  final trip;
+  RouteViewScreen({this.trip});
 
   @override
   _RouteViewScreenState createState() => _RouteViewScreenState();
@@ -22,17 +22,11 @@ class _RouteViewScreenState extends State<RouteViewScreen> {
   String googleAPiKey = "AIzaSyCmdIrgckY68EcKrytDL8u74U-YXIPl0CQ";
   String appBarText = 'Route Track';
 
-  static final CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
-    zoom: 14.4746,
-  );
-
-
   @override
   void initState() {
+    polylineCoordinates = widget.trip.route;
     super.initState();
     _addPolyLine();
-    // polylineCoordinates = trip
   }
 
   @override
@@ -45,7 +39,10 @@ class _RouteViewScreenState extends State<RouteViewScreen> {
         mapType: MapType.hybrid,
         myLocationButtonEnabled: false,
         myLocationEnabled: true,
-        initialCameraPosition: _kGooglePlex,
+        initialCameraPosition: CameraPosition(
+          target: polylineCoordinates[polylineCoordinates.length-1],
+          zoom: 20,
+        ),
         markers: Set<Marker>.of(markers.values),
         polylines: Set<Polyline>.of(polylines.values),
         onMapCreated: (GoogleMapController controller) {

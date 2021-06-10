@@ -155,7 +155,7 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   startOrStopTrip() async {
-    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
+    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best, forceAndroidLocationManager: true);
     if(startStop) {
       setState(() {
         _originLocation = LatLng(position.latitude, position.longitude);

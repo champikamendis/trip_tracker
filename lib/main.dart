@@ -60,7 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
         itemCount: trips.length,
         itemBuilder: (BuildContext context, int index) {
           return GestureDetector(
-            onTap: ()=>{ Navigator.push(context, MaterialPageRoute(builder: (context) => RouteViewScreen(trip: trips[index]),),)},
+            onTap: () => { Navigator.push(context, MaterialPageRoute(builder: (context) => RouteViewScreen(trip: trips[index]),),)},
             child: Container(
               height: 50,
               color: Colors.amber[200],
@@ -98,6 +98,5 @@ class _MyHomePageState extends State<MyHomePage> {
       trips.add(Trip(t: time, r: route));
       sharedPref.saveTrips('trips', trips);
     });
-
   }
 }
